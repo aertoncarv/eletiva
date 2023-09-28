@@ -1,0 +1,80 @@
+import cv2
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Carregar a imagem em escala de cinza
+imagem = cv2.imread('imagem.png')
+imagem = cv2.cvtColor(imagem, cv2.COLOR_BGR2RGB)
+
+# Inverter a imagem para ter objetos pretos em um fundo branco
+imagem_invertida = cv2.bitwise_not(imagem)
+
+# Definir o kernel para a operação de fechamento (um kernel retangular)
+kernel = np.ones((5, 5), np.uint8)
+
+# Aplicar a operação de fechamento para preencher buracos
+imagem_fechada = cv2.morphologyEx(imagem_invertida, cv2.MORPH_CLOSE, kernel)
+
+# Inverter novamente a imagem resultante para obter os objetos pretos preenchidos
+imagem_preenchida = cv2.bitwise_not(imagem_fechada)
+
+# Identificar objetos pretos na imagem preenchida usando uma máscara
+mascara_objetos_pretos = (imagem_preenchida == [0, 0, 0]).all(axis=2)
+
+# Criar uma cópia da imagem original
+imagem_sem_objetos_pretos = imagem.copy()
+
+# Preencher os objetos pretos na imagem original com branco usando a máscara
+imagem_sem_objetos_pretos[mascara_objetos_pretos] = [255, 255, 255]
+
+# Exibir a imagem original, a imagem com buracos preenchidos e a imagem sem objetos pretos
+plt.figure(figsize=(15, 5))
+plt.subplot(1, 3, 1)
+plt.title('Imagem Original')
+plt.imshow(imagem)
+plt.axis('off')
+
+plt.subplot(1, 3, 2)
+plt.title('Imagem com Buracos Preenchidos')
+plt.imshow(imagem_preenchida, cmap='gray')
+plt.axis('off')
+
+plt.subplot(1, 3, 3)
+plt.title('Imagem sem Objetos Pretos')
+plt.imshow(imagem_sem_objetos_pretos)
+plt.axis('off')
+
+plt.tight_layout()
+plt.show()
+
+# Converter a imagem para escala de cinza
+imagem_gray = cv2.cvtColor(imagem, cv2.COLOR_BGR2GRAY)
+
+# Aplicar o filtro Canny para detecção de bordas
+bordas = cv2.Canny(imagem_gray, threshold1=30, threshold2=70)  # Ajuste os valores de limite conforme necessário
+
+# Realçar as bordas na imagem original
+imagem_realcada = cv2.bitwise_and(imagem, imagem, mask=bordas)
+
+# Exibir a imagem original, a imagem com bordas realçadas e a imagem das bordas
+plt.figure(figsize=(15, 5))
+plt.subplot(1, 3, 1)
+plt.title('Imagem Original')
+plt.imshow(imagem)
+plt.axis('off')
+
+plt.subplot(1, 3, 2)
+plt.title('Bordas Realçadas')
+plt.imshow(imagem_realcada)
+plt.axis('off')
+
+plt.subplot(1, 3, 3)
+plt.title('Imagem das Bordas')
+plt.imshow(bordas, cmap='gray')
+plt.axis('off')
+
+plt.tight_layout()
+plt.show()
+
+
+
