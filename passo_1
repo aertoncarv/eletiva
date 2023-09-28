@@ -1,0 +1,115 @@
+import cv2
+import numpy as np
+import matplotlib.pyplot as plt
+
+
+imagem = cv2.imread('lena.png')
+
+# Definir a largura e altura desejadas para a imagem redimensionada
+nova_largura = 300
+nova_altura = 300
+
+# Redimensionar a imagem para as dimensões desejadas
+imagem_redimensionada = cv2.resize(imagem, (nova_largura, nova_altura))
+
+# Exibir a imagem original e a imagem redimensionada
+cv2.imshow('Imagem Original', imagem)
+cv2.imshow('Imagem Redimensionada', imagem_redimensionada)
+
+# Aguardar até que uma tecla seja pressionada e, em seguida, fechar as janelas
+cv2.waitKey(0)
+cv2.destroyAllWindows()
+
+
+# Converter a imagem para o espaço de cores HSV
+imagem_hsv = cv2.cvtColor(imagem, cv2.COLOR_BGR2HSV)
+
+# Exibir a imagem original e a imagem convertida para HSV
+cv2.imshow('Imagem HSV', imagem_hsv)
+
+# Dividir a imagem nos canais R, G e B
+canal_r = imagem[:, :, 0]
+canal_g = imagem[:, :, 1]
+canal_b = imagem[:, :, 2]
+
+# Calcular o histograma para cada canal de cor
+hist_r = cv2.calcHist([canal_r], [0], None, [256], [0, 256])
+hist_g = cv2.calcHist([canal_g], [0], None, [256], [0, 256])
+hist_b = cv2.calcHist([canal_b], [0], None, [256], [0, 256])
+
+# Plotar os histogramas
+plt.figure(figsize=(8, 6))
+plt.title('Histograma Colorido')
+plt.xlabel('Valor do pixel')
+plt.ylabel('Frequência')
+
+plt.plot(hist_r, color='red', label='Canal R')
+plt.plot(hist_g, color='green', label='Canal G')
+plt.plot(hist_b, color='blue', label='Canal B')
+
+plt.legend()
+plt.xlim([0, 256])
+
+# Exibir o gráfico do histograma
+plt.show()
+# Calcular o histograma em escala de cinza
+hist_gray = cv2.calcHist([imagem], [0], None, [256], [0, 256])
+
+# Plotar o histograma
+plt.figure(figsize=(8, 6))
+plt.title('Histograma em Escala de Cinza')
+plt.xlabel('Valor do Pixel')
+plt.ylabel('Frequência')
+
+plt.plot(hist_gray, color='black')
+
+plt.xlim([0, 256])
+
+# Exibir o gráfico do histograma
+plt.show()
+
+# # Carregar a imagem em escala de cinza
+imagem = cv2.imread('lena.png', cv2.IMREAD_GRAYSCALE)
+
+# Realizar a equalização de histograma
+imagem_equalizada = cv2.equalizeHist(imagem)
+
+# Plotar a imagem original e a imagem equalizada
+plt.figure(figsize=(10, 5))
+plt.subplot(1, 2, 1)
+plt.title('Imagem Original')
+plt.imshow(imagem, cmap='gray')
+plt.axis('off')
+
+plt.subplot(1, 2, 2)
+plt.title('Imagem Equalizada')
+plt.imshow(imagem_equalizada, cmap='gray')
+plt.axis('off')
+
+plt.tight_layout()
+plt.show()
+
+# Exibir os canais de cores separadamente
+plt.figure(figsize=(12, 4))
+
+plt.subplot(131)
+plt.imshow(canal_r, cmap='gray')
+plt.title('Canal Vermelho')
+plt.axis('off')
+
+plt.subplot(132)
+plt.imshow(canal_g, cmap='gray')
+plt.title('Canal Verde')
+plt.axis('off')
+
+plt.subplot(133)
+plt.imshow(canal_b, cmap='gray')
+plt.title('Canal Azul')
+plt.axis('off')
+
+plt.tight_layout()
+plt.show()
+
+# Aguardar até que uma tecla seja pressionada e, em seguida, fechar as janelas
+cv2.waitKey(0)
+cv2.destroyAllWindows()
