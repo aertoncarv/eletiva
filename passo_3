@@ -1,0 +1,80 @@
+import cv2
+import numpy as np
+
+# Carregue a imagem "lena_ruido.png"
+imagem = cv2.imread('lena_ruido.jpeg')
+
+# Aplique o filtro de mediana com um tamanho de kernel (janela) de 3x3
+imagem_filtrada = cv2.medianBlur(imagem,3)
+
+# Salve a imagem filtrada
+'''cv2.imwrite('lena_ruido_filtrada.png', imagem_filtrada)'''
+
+# Feche a janela
+cv2.destroyAllWindows()
+
+imagem = cv2.imread('coins.png', cv2.IMREAD_GRAYSCALE)
+
+# Verifique se a imagem foi carregada com sucesso
+if imagem is not None:
+    # Aplicar filtro Sobel
+    sobel_x = cv2.Sobel(imagem, cv2.CV_64F, 1, 0, ksize=3)
+    sobel_y = cv2.Sobel(imagem, cv2.CV_64F, 0, 1, ksize=3)
+
+    # Aplicar filtro Prewitt
+    kernel_x = np.array([[-1, 0, 1], [-1, 0, 1], [-1, 0, 1]], dtype=np.float32)
+    kernel_y = np.array([[-1, -1, -1], [0, 0, 0], [1, 1, 1]], dtype=np.float32)
+    prewitt_x = cv2.filter2D(imagem, -1, kernel_x)
+    prewitt_y = cv2.filter2D(imagem, -1, kernel_y)
+
+    # Mostrar as imagens filtradas
+    cv2.imshow('Imagem Original', imagem)
+    cv2.imshow('Sobel X', sobel_x)
+    cv2.imshow('Sobel Y', sobel_y)
+    cv2.imshow('Prewitt X', prewitt_x)
+    cv2.imshow('Prewitt Y', prewitt_y)
+
+    # Aguarde até que uma tecla seja pressionada e feche a janela
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
+else:
+    print('Erro ao carregar a imagem.')
+
+
+# Carregue a imagem "margaridas.png"
+imagem = cv2.imread('margaridas.png', cv2.IMREAD_GRAYSCALE)
+
+# Verifique se a imagem foi carregada com sucesso
+if imagem is not None:
+    # Defina o número de linhas e colunas desejadas
+    num_linhas = 4
+    num_colunas = 4
+
+    # Calcule o tamanho dos quadrados
+    altura, largura = imagem.shape
+    tamanho_quadrado_x = largura // num_colunas
+    tamanho_quadrado_y = altura // num_linhas
+
+    # Divida a imagem em quadrados e aplique binarização a cada um
+    for linha in range(num_linhas):
+        for coluna in range(num_colunas):
+            x1 = coluna * tamanho_quadrado_x
+            y1 = linha * tamanho_quadrado_y
+            x2 = x1 + tamanho_quadrado_x
+            y2 = y1 + tamanho_quadrado_y
+
+            # Extrai o quadrado da imagem
+            quadrado = imagem[y1:y2, x1:x2]
+
+            # Aplique a binarização (você pode ajustar os parâmetros conforme necessário)
+            _, binarizado = cv2.threshold(quadrado, 128, 255, cv2.THRESH_BINARY)
+
+            # Mostre ou salve as partes binarizadas
+            cv2.imshow(f'Quadrado {linha}-{coluna}', binarizado)
+            cv2.imwrite(f'quadrado_{linha}_{coluna}.png', binarizado)
+
+    # Aguarde até que uma tecla seja pressionada e feche as janelas
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
+else:
+    print('Erro ao carregar a imagem.')
